@@ -1,12 +1,13 @@
 package ua.blacky.douapp.ui;
 
+import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
 
+import ua.blacky.douapp.AdapterBinding;
 import ua.blacky.douapp.R;
 import ua.blacky.douapp.models.Event;
 
@@ -23,13 +24,15 @@ public final class EventListAdapter extends RecyclerView.Adapter<EventListAdapte
 
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View holderView = LayoutInflater.from(parent.getContext()).inflate(R.layout.event_list_item, null);
-        return new Holder(holderView);
+        final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        final AdapterBinding binding = DataBindingUtil.inflate(inflater, R.layout.event_list_item, parent, false);
+        return new Holder(binding);
     }
 
     @Override
     public void onBindViewHolder(Holder holder, int position) {
-
+        holder.mBinding.setEvent(mEventList.get(position));
+        holder.mBinding.executePendingBindings();
     }
 
     @Override
@@ -39,8 +42,11 @@ public final class EventListAdapter extends RecyclerView.Adapter<EventListAdapte
 
     protected class Holder extends RecyclerView.ViewHolder {
 
-        public Holder(View itemView) {
-            super(itemView);
+        private AdapterBinding mBinding;
+
+        private Holder(AdapterBinding binding) {
+            super(binding.getRoot());
+            mBinding = binding;
         }
 
     }
