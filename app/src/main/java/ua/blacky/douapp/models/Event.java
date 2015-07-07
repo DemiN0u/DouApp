@@ -90,10 +90,6 @@ public class Event {
         Picasso.with(view.getContext()).load(imageUrl).into(view);
     }
 
-    public void addTag(String tag) {
-        tags.add(tag);
-    }
-
     public class Builder {
         private Builder() {
 

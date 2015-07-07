@@ -22,42 +22,39 @@ import ua.blacky.douapp.models.Event;
  */
 public class DouParser {
 
-    private final Object lockObject = new Object();
-
     private List<Event> mEventList = new ArrayList<>();
 
-    private final HtmlCleaner mCleaner = new HtmlCleaner();
-
-    public DouParser(final String url) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                synchronized (lockObject) {
-                    int pageNum = 1;
-                    while (true) {
-                        StringBuilder sb = new StringBuilder();
-                        try {
-                            URL rootUrl = new URL(url + pageNum);
-                            BufferedReader in = new BufferedReader(
-                                    new InputStreamReader(rootUrl.openStream()));
-
-                            String inputLine;
-                            while ((inputLine = in.readLine()) != null)
-                                sb.append(inputLine);
-                            in.close();
-                            final String htmlContent = sb.toString();
-                            addEvents(mCleaner.clean(htmlContent));
-                        } catch (IOException e) {
-                            break;
-                        }
-                        pageNum++;
-                    }
-                }
-            }
-        }).start();
+    private DouParser() {
     }
 
-    private void addEvents(TagNode rootNode) {
+    public static List<Event> parse(final String url) {
+        List<Event> result = new ArrayList<>();
+        HtmlCleaner mCleaner = new HtmlCleaner();
+        int pageNum = 1;
+        while (true) {
+            StringBuilder sb = new StringBuilder();
+            try {
+                URL rootUrl = new URL(url + pageNum);
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(rootUrl.openStream()));
+
+                String inputLine;
+                while ((inputLine = in.readLine()) != null)
+                    sb.append(inputLine);
+                in.close();
+                final String htmlContent = sb.toString();
+                result.addAll(addEvents(mCleaner.clean(htmlContent)));
+            } catch (IOException e) {
+                break;
+            }
+            pageNum++;
+        }
+        return result;
+    }
+
+
+    private static List<Event> addEvents(TagNode rootNode) {
+        List<Event> result = new ArrayList<>();
         TagNode divRootNode = new TagNode("");
         try {
             divRootNode = (TagNode) rootNode.evaluateXPath("/body/div[1]/div[3]/div/div[2]/div/div/div[1]")[0];
@@ -70,17 +67,18 @@ public class DouParser {
                 final String nodeClass = node.getAttributeByName("class");
                 if (nodeClass != null) {
                     if (TextUtils.equals(nodeClass, "event")) {
-                        mEventList.add(getEventFromDiv(node));
+                        result.add(getEventFromDiv(node));
                     }
                 }
             }
         }
+        return result;
     }
 
-    private Event getEventFromDiv(TagNode eventDiv) {
+    private static Event getEventFromDiv(TagNode eventDiv) {
         final List<? extends BaseToken> allChildren = eventDiv.getAllChildren();
 
-        TagNode node = new TagNode("");
+        TagNode node;
         try {
             String when = ((ContentNode) ((TagNode) eventDiv.evaluateXPath("/div[1]/span")[0]).getAllChildren().get(0)).getContent();
             String where = eventDiv.evaluateXPath("/div[1]/text()")[0].toString().trim();
@@ -124,14 +122,4 @@ public class DouParser {
         }
         return null;
     }
-
-    public List<Event> getEventList() {
-        synchronized (lockObject) {
-            return mEventList;
-        }
-    }
-
-/*    private Event getEventFromDiv(TagNode divNode){
-
-    }*/
 }

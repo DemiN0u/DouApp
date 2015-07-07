@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DouApp</string>
+    <string name="action_settings">Налаштування</string>
+    <string name="events">Події</string>
+    <string name="feed">Стрічка</string>
+    <string name="job">Робота</string>
+    <string name="salaries">Зарплати</string>
+</resources>

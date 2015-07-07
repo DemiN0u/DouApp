@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/feed"
+        android:actionLayout="@layout/drawer_item"
+        android:icon="@drawable/feed_icon"
+        android:title="@string/feed"
+        app:actionLayout="@layout/drawer_item"
+        />
+    <item
+        android:id="@+id/salaries"
+        android:actionLayout="@layout/drawer_item"
+        android:icon="@drawable/salary_icon"
+        android:title="@string/salaries"
+        app:actionLayout="@layout/drawer_item"
+        />
+    <item
+        android:id="@+id/job"
+        android:actionLayout="@layout/drawer_item"
+        android:icon="@drawable/job_icon"
+        android:title="@string/job"
+        app:actionLayout="@layout/drawer_item"
+        />
+    <item
+        android:id="@+id/events"
+        android:actionLayout="@layout/drawer_item"
+        android:icon="@drawable/events_icon"
+        android:title="@string/events"
+        app:actionLayout="@layout/drawer_item"
+        />
+</menu>
